@@ -33,10 +33,7 @@ class Oper_First:
                             ["F", "P"],
                             ["P", "(E)"],
                             ["P", "i"]]
-        if input_str:
-            self.input_str = input_str+"#"
-        else:
-            self.input_str = "i+i#"
+
 
     #返回所有的左边的非终结符
     def get_state(self):
@@ -330,64 +327,9 @@ class Oper_First:
 
         return isflag, firstvt, lastvt, table, state
 
-    def run(self):
+    def change_input(self, input):
+        self.input_str = input + "#"
 
-
-        print("进行构造的文法G[S]")
-        for i in self.grammar:
-            print("%s -> %s" % (i[0], i[1]))
-        print("===============================================", end="\n")
-
-        # 得到FIRSTVT集合
-        firstvt = self.get_firstvt()
-        print("该文法的FIRSTVT:")
-        for key, value in firstvt.items():
-            print("FIRSTVT(%s) = {%s}" % (key, str(value)[1:-1]))
-        print("===============================================", end="\n")
-
-        # 得到LASTVT集合
-        lastvt = self.get_lastvt()
-        print("该文法的LASTVT集合:")
-        for key, value in lastvt.items():
-            print("LASTVT(%s) = {%s}" % (key, str(value)[1:-1]))
-        print("===============================================", end="\n\n")
-
-        # 得到算符优先关系表
-        table, state, isflag = self.get_priority_table(firstvt, lastvt)
-        if not isflag:
-            print("该文法是否属于算符优先文法:%s" % (str(isFlag)), end="\n\n")
-        else:
-            print("%27s" % ("算符优先关系表"))
-            print("---------------------------------------------------------")
-            for i in state:
-                print("%8s" % i, end="")
-            print()
-            for i in range(len(table)):
-                print("%s" % state[i], end="")
-                print("%7s" % table[i][0], end="")
-                for x in table[i][1:]:
-                    print("%8s" % x, end="")
-                print("")
-
-            # 对文法进行算符分析
-            print("接下来对输入串 %16s 进行规约" % (self.input_str))
-            print("---------------------------------------------------")
-            steps = self.analysis_operator(table, state)
-            print(steps)
-
+    def run(self, table, state):
+        steps = self.analysis_operator(table, state)
         return steps
-
-
-# g = """E->E+T
-# E->T
-# T->T*F
-# T->F
-# F->P|F
-# F->P
-# P->(E)
-# P->i"""
-#
-#
-#
-# of = Oper_First(input_str="i+i*i|(i)",grammer=g)
-# of.run()
