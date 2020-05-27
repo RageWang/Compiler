@@ -110,8 +110,8 @@ class Op_First(object):
         g = self.grammar.toPlainText()
         isflag, firstvt, lastvt, table, state = '', '', '', '', ''
         try:
-            opf = Oper_First(grammer=g)
-            isflag, firstvt, lastvt, table, state = opf.judge_grammar()
+            self.opf = Oper_First(grammer=g)
+            isflag, firstvt, lastvt, table, state = self.opf.judge_grammar()
         except:
             isflag = False
         print(isflag)
@@ -129,7 +129,7 @@ class Op_First(object):
             print(l_t)
             self.textBrowser_2.setText(l_t)
 
-            print(state)
+            # print(state)
             self.sheet.setRowCount(len(state))
             self.sheet.setColumnCount(len(state))
             self.sheet.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -151,14 +151,14 @@ class Op_First(object):
 
 
             self.button_Parse.setEnabled(True)
-            input = self.example.toPlainText()
-            self.button_Parse.clicked.connect(lambda : self.run_op_first(g, input))
+
+            self.button_Parse.clicked.connect(lambda : self.run_op_first(table, state))
 
 
-    def run_op_first(self, grammar, input=""):
-        opf = Oper_First(grammer=grammar, input_str=input)
-        steps = opf.run()
-        # print(steps)
+    def run_op_first(self, table="", state=""):
+        input = self.example.toPlainText()
+        self.opf.change_input(input)
+        steps = self.opf.run(table, state)
 
         self.step.setRowCount(len(steps)-1)
         self.step.setColumnCount(len(steps[0]))
@@ -167,7 +167,6 @@ class Op_First(object):
 
         self.step.setHorizontalHeaderLabels(steps[0])
         self.step.verticalHeader().setVisible(False)
-        # self.step.setVerticalHeaderLabels(steps[0])
 
         for i in range(1,len(steps)):
             for j in range(len(steps[0])):
